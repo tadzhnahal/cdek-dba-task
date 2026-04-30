@@ -1,3 +1,5 @@
+-- Подробная информация о ходе выполнения задания находится здесь: https://github.com/tadzhnahal/cdek-dba-task
+
 drop schema if exists delivery cascade;
 create schema delivery;
 set search_path = delivery;
