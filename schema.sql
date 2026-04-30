@@ -124,3 +124,16 @@ create table parcels (
     constraint parcels_sent_at_check check (sent_at is null or sent_at >= created_at),
     constraint parcels_delivered_at_check check (delivered_at is null or (sent_at is not null and delivered_at >= sent_at))
 );
+
+create table parcel_status_history (
+    id bigint generated always as identity primary key,
+    parcel_id bigint not null,
+    status_id smallint not null,
+    office_id bigint,
+    changed_at timestamptz not null default now(),
+    comment text,
+
+    constraint parcel_status_history_parcel_id_fk foreign key (parcel_id) references parcels(id),
+    constraint parcel_status_history_status_id_fk foreign key (status_id) references parcel_statuses(id),
+    constraint parcel_status_history_office_id_fk foreign key (office_id) references offices(id)
+);
