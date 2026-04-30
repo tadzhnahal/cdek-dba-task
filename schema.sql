@@ -171,7 +171,7 @@ on tariff_versions (tariff_id, valid_from desc);
 
 -- комментарии
 
-comment on table counterparties is 'контрагенты: клиенты и компании, которые участвуют в доставке';
+comment on table counterparties is 'контрагенты: физические лица и компании, которые участвуют в доставке';
 comment on column counterparties.counterparty_type is 'тип контрагента: физическое лицо или компания';
 
 comment on table offices is 'офисы, где принимают, хранят, сортируют или выдают посылки';
@@ -199,7 +199,7 @@ comment on column parcels.recipient_id is 'контрагент, который 
 comment on column parcels.payer_id is 'контрагент, который оплачивает доставку';
 comment on column parcels.current_office_id is 'офис, где посылка находится сейчас';
 comment on column parcels.current_status_id is 'текущий статус посылки';
-comment on column parcels.tariff_version_id is 'версия тарифа, которую выбрали при оформлении посылки';
+comment on column parcels.tariff_version_id is 'версия тарифа, зафиксированная при оформлении посылки';
 comment on column parcels.delivery_price is 'итоговая цена доставки для этой посылки';
 
 comment on table parcel_status_history is 'история смены статусов посылки';
