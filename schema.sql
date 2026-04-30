@@ -153,3 +153,18 @@ create table parcel_movements (
     constraint parcel_movements_offices_check check (from_office_id <> to_office_id),
     constraint parcel_movements_arrived_at_check check (arrived_at is null or arrived_at >= departed_at)
 );
+
+create index parcels_current_status_id_idx on parcels (current_status_id);
+create index parcels_current_office_id_idx on parcels (current_office_id);
+create index parcels_sender_id_idx on parcels (sender_id);
+create index parcels_recipient_id_idx on parcels (recipient_id);
+create index parcels_tariff_version_id_idx on parcels (tariff_version_id);
+
+create index parcel_status_history_parcel_id_changed_at_idx
+on parcel_status_history (parcel_id, changed_at desc);
+
+create index parcel_movements_parcel_id_departed_at_idx
+on parcel_movements (parcel_id, departed_at desc);
+
+create index tariff_versions_tariff_id_valid_from_idx
+on tariff_versions (tariff_id, valid_from desc);
