@@ -58,11 +58,11 @@ create table tariffs (
 
     constraint tariffs_code_unique unique (code),
     constraint tariffs_code_check check (length(trim(code)) > 0),
-    constraint tariffs_name_check check (length(trim(code)) > 0)
+    constraint tariffs_name_check check (length(trim(name)) > 0)
 );
 
 create table tariff_versions (
-    if bigint generated always as identity primary key,
+    id bigint generated always as identity primary key,
     tariff_id bigint not null,
     version_number integer not null,
     valid_from timestamptz not null,
@@ -85,4 +85,42 @@ create table tariff_versions (
     constraint tariff_versions_size_check check (max_length_cm > 0 and max_width_cm > 0 and max_height_cm > 0),
     constraint tariff_versions_days_check check (delivery_days_min > 0 and delivery_days_max >= delivery_days_min),
     constraint tariff_versions_price_check check (base_price >= 0 and price_per_kg >= 0)
+);
+
+create table parcels (
+    id bigint generated always as identity primary key,
+    tracking_number text not null,
+    sender_id bigint not null,
+    recipient_id bigint not null,
+    payer_id bigint not null,
+    origin_office_id bigint not null,
+    destination_office_id bigint not null,
+    current_office_id bigint not null,
+    current_status_id smallint not null,
+    tariff_version_id bigint not null,
+    weight_kg numeric(10, 3) not null,
+    length_cm numeric(10, 2) not null,
+    width_cm numeric(10, 2) not null,
+    height_cm numeric(10, 2) not null,
+    declared_value numeric(12, 2) not null default 0,
+    delivery_price numeric(12, 2) not null,
+    created_at timestamptz not null default now(),
+    sent_at timestamptz,
+    delivered_at timestamptz,
+
+    constraint parcels_tracking_number_unique unique (tracking_number),
+    constraint parcels_sender_id_fk foreign key (sender_id) references counterparties(id),
+    constraint parcels_recipient_id_fk foreign key (recipient_id) references counterparties(id),
+    constraint parcels_payer_id_fk foreign key (payer_id) references counterparties(id),
+    constraint parcels_origin_office_id_fk foreign key (origin_office_id) references offices(id),
+    constraint parcels_destination_office_id_fk foreign key (destination_office_id) references offices(id),
+    constraint parcels_current_office_id_fk foreign key (current_office_id) references offices(id),
+    constraint parcels_current_status_id_fk foreign key (current_status_id) references parcel_statuses(id),
+    constraint parcels_tariff_version_id_fk foreign key (tariff_version_id) references tariff_versions(id),
+    constraint parcels_tracking_number_check check (length(trim(tracking_number)) > 0),
+    constraint parcels_weight_check check (weight_kg > 0),
+    constraint parcels_size_check check (length_cm > 0 and width_cm > 0 and height_cm > 0),
+    constraint parcels_price_check check (declared_value >= 0 and delivery_price >= 0),
+    constraint parcels_sent_at_check check (sent_at is null or sent_at >= created_at),
+    constraint parcels_delivered_at_check check (delivered_at is null or (sent_at is not null and delivered_at >= sent_at))
 );
