@@ -168,3 +168,46 @@ on parcel_movements (parcel_id, departed_at desc);
 
 create index tariff_versions_tariff_id_valid_from_idx
 on tariff_versions (tariff_id, valid_from desc);
+
+-- комментарии
+
+comment on table counterparties is 'контрагенты: клиенты и компании, которые участвуют в доставке';
+comment on column counterparties.counterparty_type is 'тип контрагента: физическое лицо или компания';
+
+comment on table offices is 'офисы, где принимают, хранят, сортируют или выдают посылки';
+comment on column offices.is_active is 'если false, офис не используют для новых посылок';
+
+comment on table parcel_statuses is 'справочник возможных статусов посылки';
+comment on column parcel_statuses.is_final is 'признак статуса, после которого доставка завершена или отменена';
+
+comment on table tariffs is 'справочник услуг доставки';
+comment on column tariffs.is_active is 'если false, тариф не выбирают для новых посылок';
+
+comment on table tariff_versions is 'условия тарифа, которые действуют в заданный период';
+comment on column tariff_versions.tariff_id is 'услуга доставки, к которой относится эта версия условий';
+comment on column tariff_versions.valid_from is 'дата и время начала действия версии тарифа';
+comment on column tariff_versions.valid_to is 'дата и время конца действия версии тарифа';
+comment on column tariff_versions.min_weight_kg is 'минимальный вес посылки для этой версии тарифа';
+comment on column tariff_versions.max_weight_kg is 'максимальный вес посылки для этой версии тарифа';
+comment on column tariff_versions.base_price is 'базовая цена по этой версии тарифа';
+comment on column tariff_versions.price_per_kg is 'доплата за каждый килограмм по этой версии тарифа';
+
+comment on table parcels is 'посылки с текущим статусом, текущим офисом и выбранной версией тарифа';
+comment on column parcels.tracking_number is 'уникальный номер посылки для поиска';
+comment on column parcels.sender_id is 'контрагент, который отправляет посылку';
+comment on column parcels.recipient_id is 'контрагент, который получает посылку';
+comment on column parcels.payer_id is 'контрагент, который оплачивает доставку';
+comment on column parcels.current_office_id is 'офис, где посылка находится сейчас';
+comment on column parcels.current_status_id is 'текущий статус посылки';
+comment on column parcels.tariff_version_id is 'версия тарифа, которую выбрали при оформлении посылки';
+comment on column parcels.delivery_price is 'итоговая цена доставки для этой посылки';
+
+comment on table parcel_status_history is 'история смены статусов посылки';
+comment on column parcel_status_history.office_id is 'офис, где посылка получила этот статус';
+comment on column parcel_status_history.changed_at is 'дата и время смены статуса';
+
+comment on table parcel_movements is 'история движения посылки между офисами';
+comment on column parcel_movements.from_office_id is 'офис, из которого отправили посылку';
+comment on column parcel_movements.to_office_id is 'офис, куда отправили посылку';
+comment on column parcel_movements.departed_at is 'дата и время выхода из офиса';
+comment on column parcel_movements.arrived_at is 'дата и время прибытия в офис';
