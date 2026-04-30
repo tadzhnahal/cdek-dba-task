@@ -137,3 +137,19 @@ create table parcel_status_history (
     constraint parcel_status_history_status_id_fk foreign key (status_id) references parcel_statuses(id),
     constraint parcel_status_history_office_id_fk foreign key (office_id) references offices(id)
 );
+
+create table parcel_movements (
+    id bigint generated always as identity primary key,
+    parcel_id bigint not null,
+    from_office_id bigint not null,
+    to_office_id bigint not null,
+    departed_at timestamptz not null,
+    arrived_at timestamptz,
+    created_at timestamptz not null default now(),
+
+    constraint parcel_movements_parcel_id_fk foreign key (parcel_id) references parcels(id),
+    constraint parcel_movements_from_office_id_fk foreign key (from_office_id) references offices(id),
+    constraint parcel_movements_to_office_id_fk foreign key (to_office_id) references offices(id),
+    constraint parcel_movements_offices_check check (from_office_id <> to_office_id),
+    constraint parcel_movements_arrived_at_check check (arrived_at is null or arrived_at >= departed_at)
+);
